@@ -11,7 +11,7 @@ class Mission extends Model
 	{
 	    return $this->belongsTo('App\Client', 'clients_id');
 	}
-	public function getTotalAmountAttribute() 
+	public function getTotalAmountAttribute()
 	{
 	    return $this->adr * $this->ct_days;
 	}
