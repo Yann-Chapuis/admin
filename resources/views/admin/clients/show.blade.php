@@ -34,7 +34,7 @@
                   <div class="info-box bg-light">
                     <div class="info-box-content">
                       <span class="info-box-text text-center text-muted">Total factures</span>
-                      <span class="info-box-number text-center text-muted mb-0">A FAIRE</span>
+                      <span class="info-box-number text-center text-muted mb-0"> {{ number_format($count_factures, 0, '.', ' ') }} €</span>
                     </div>
                   </div>
                 </div>
@@ -42,7 +42,7 @@
                   <div class="info-box bg-light">
                     <div class="info-box-content">
                       <span class="info-box-text text-center text-muted">Temps passé</span>
-                      <span class="info-box-number text-center text-muted mb-0">{{ $temps_total }}</span>
+                      <span class="info-box-number text-center text-muted mb-0">{{ $count_days }} jours</span>
                     </div>
                   </div>
                 </div>
@@ -50,7 +50,9 @@
                   <div class="info-box bg-light">
                     <div class="info-box-content">
                       <span class="info-box-text text-center text-muted">Dernière mission</span>
-                      <span class="info-box-number text-center text-muted mb-0">A FAIRE<span>
+                      <span class="info-box-number text-center text-muted mb-0">                         
+                            {{ $last_mission ? date('d/m/Y', strtotime($last_mission)) : '-' }} 
+                      <span>
                     </div>
                   </div>
                 </div>
@@ -78,7 +80,7 @@
                               <span class="username">
                                 <a href="">{{ $mission->titre }}</a>  
                               </span>
-                              <span class="description">{{ $mission->ct_days }} jours ({{ $mission->start_date }} - {{ $mission->end_date }})</span>
+                              <span class="description">{{ $mission->ct_days }} jours ({{ date('d/m/Y', strtotime($mission->start_date)) }} - {{ date('d/m/Y', strtotime($mission->end_date)) }})</span>
                             </div>
                           </div>
                           <div class="col-md-3 text-center">
