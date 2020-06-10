@@ -7,8 +7,6 @@ use App\Client;
 use App\Contact;
 use App\Mission;
 
-
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +23,7 @@ class ClientController extends Controller
 
     public function __construct(MissionRepository $missionR)
     {
-        //$this->missions = $missionR;
+        $this->missions = $missionR;
     }
 
     public function index(Request $request)
@@ -69,13 +67,14 @@ class ClientController extends Controller
 
     public function show(Client $client)
     {
+        setlocale(LC_TIME, "fr_FR");
         $contacts = $client->contacts;
         $missions = $client->missions;
-        $count_days = $this->missions->getCountDays($client->missions->id);
-
-        $total = $client->missions->sum('total_amount');
-         //dd($total);       
-        return view('admin.clients.show', compact('client', 'contacts', 'missions', 'total', 'temps_total'));
+        $count_days = $this->missions->getCountDays($client->id);
+        $count_factures = $this->missions->getCountFactures($client->id);
+        $last_mission = $this->missions->getLastMission($client->id, $client);
+        //dd($last_mission);       
+        return view('admin.clients.show', compact('client', 'contacts', 'missions', 'total', 'count_days', 'count_factures', 'last_mission'));
     }
 
     public function edit(Client $client)
