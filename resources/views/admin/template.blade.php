@@ -108,6 +108,14 @@
               </li>
             </ul>
           </li>
+          <li class="nav-item">
+            <a href="{{ route('agenda.planning') }}" class="nav-link">
+              <i class="nav-icon far fa-calendar-alt"></i>
+              <p>
+                Agenda
+              </p>
+            </a>
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -136,6 +144,7 @@
 <!-- ./wrapper -->
 <!-- js -->
 <script src="{{ mix('js/admin.js') }}"></script> 
+<!--<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>-->
 @yield('js') 
 </body>
 </html>

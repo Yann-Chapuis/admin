@@ -12,4 +12,5 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js/admin.js')
+	.js('resources/js/calendar.js', 'public/js/calendar.js')
     .sass('resources/sass/admin/admin.scss', 'public/css/admin.css');

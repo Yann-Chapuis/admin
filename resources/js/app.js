@@ -31,9 +31,13 @@ const app = new Vue({
     el: '#app',
 });
 
+require('jquery-ui/ui/widgets/draggable');
 require('admin-lte');
+
+/* Table */
 require('../../node_modules/admin-lte/plugins/datatables/jquery.dataTables.min.js');
 require('../../node_modules/admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js');
 require('../../node_modules/admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js');
 require('../../node_modules/admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js');
 require('../../node_modules/admin-lte/plugins/bs-custom-file-input/bs-custom-file-input.min.js');
+

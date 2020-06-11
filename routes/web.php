@@ -21,5 +21,5 @@ Auth::routes(['register' => false, 'reset' => false]);
 
 Route::middleware('auth')->group(function () {
 	Route::resource('clients','ClientController');
-	Route::get('agenda','AgendaController@index');
+	Route::get('agenda','AgendaController@index')->name('agenda.planning');
 });
