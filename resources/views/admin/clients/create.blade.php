@@ -27,6 +27,7 @@
     <section class="content">
       <form method="post" action="{{ route('clients.store') }}" enctype="multipart/form-data">
         @csrf
+        @method('put')
         <div class="row">
           <div class="col-md-6">
             <div class="card card-primary">
@@ -67,7 +68,7 @@
                       <label for="ville">Ville</label>
                       <input type="search" id="address" name="ville" class="form-control" placeholder="Ville">
                     </div>
-                    @error('address')
+                    @error('ville')
                     <p class="alert alert-danger" style="margin-top:1em;">{{ $message }}</p>
                     @enderror
                   </div>

@@ -116,7 +116,7 @@
                 <p class="text-sm">Principaux contacts :
                   <b class="d-block">{{ $client->email }} ({{ $client->telephone }})</b>
                 </p>
-                <p class="text-sm">Contacts :
+                <p class="text-sm">Contacts : </p>
                   @foreach($contacts as $contact)
                     <b class="d-block"><a href="" data-toggle="modal" data-target="#modal-update{{ $contact->id }}">{{ $contact->fullname }} ({{ $contact->poste }}) :</a></b> {{ $contact->email }} - {{ $contact->telephone }}
 
@@ -171,7 +171,7 @@
                     <!-- /.modal -->
 
                   @endforeach
-                </p>
+
                   <a class="btn btn-info btn-sm" href="" data-toggle="modal" data-target="#modal-default">
                     <i class="fas fa-pencil-alt">
                     </i>
@@ -206,7 +206,6 @@
             </button>
           </div>
           <div class="modal-body">
-
             <form method="post" action="{{ route('contacts.store') }}">
              @csrf
               <div class="form-group">

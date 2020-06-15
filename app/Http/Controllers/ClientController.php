@@ -79,12 +79,36 @@ class ClientController extends Controller
     public function edit(Client $client)
     {
         $client = Client::find($client->id);
-        return view('admin.clients.edit', compact('client'));
+        $contacts = $client->contacts;
+        return view('admin.clients.edit', compact('client', 'contacts'));
     }
 
     public function update(Request $request, Client $client)
     {
-        //
+        //dd($request->all());
+        if($request->picture) {
+
+            $request->validate([
+                'picture' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ]);
+            $user_id = Auth::user()->id;
+            $user_name = Auth::user()->name;
+            $imageName = 'client_'.$user_id.'_'.$user_name.'_'.time().'.'.$request->picture->extension();
+
+            $request->picture->move(public_path('img/clients'), $imageName);
+
+            // Permet de personaliser le nom de l'image à inscrire dans la base de données
+            $value_form=$request->all();
+            $value_form['picture']=$imageName;
+            // On intégre dans la bdd
+            Client::find($request->id)->update($value_form);
+        }
+        else {
+
+            Client::find($request->id)->update($request->all());
+        }
+        return redirect()->back()->with([$request->id])->with('info', 'Le client a bien été modifié');
+
     }
     public function destroy(Client $client)
     {

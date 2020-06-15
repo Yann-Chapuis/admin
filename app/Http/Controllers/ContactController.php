@@ -14,12 +14,12 @@ class ContactController extends Controller
     public function store(Request $request)
     {
         $new_contact = Contact::create($request->all());
-        return redirect()->route('clients.show', [$request->clients_id])->with('info', 'Le contact a bien été créée');
+        return redirect()->back()->with([$request->clients_id])->with('info', 'Le contact a bien été créée');
     }
     public function update(Request $request, Contact $contact)
     {
         $contact->update($request->all());
-        return redirect()->route('clients.show', [$request->clients_id])->with('info', 'Le contact a bien été modifié');
+        return redirect()->back()->with([$request->clients_id])->with('info', 'Le contact a bien été modifié');
     }
     public function show()
     {

@@ -25,6 +25,15 @@
 
     <!-- Main content -->
     <section class="content">
+    @if(session('info'))
+        <div class="alert alert-success" role="alert">
+            {{ session('info') }}
+        </div>
+    @endif
+    <section class="content">
+      <form method="post" action="{{ route('clients.update', $client->id) }}" enctype="multipart/form-data">
+        @csrf
+        @method('put')
       <div class="row">
         <div class="col-md-6">
           <div class="card card-primary">
@@ -46,9 +55,9 @@
                     <div class="form-group">
                       <label for="etat">Type</label>
                       <select class="form-control custom-select" name="etat">
-                        <option value="0"selected>Prospect</option>
-                        <option value="1">Client</option>
-                        <option value="2">Ancien client</option>
+                        <option value="0" {{ $client->etat == 0 ? 'selected' : '' }}>Prospect</option>
+                        <option value="1" {{ $client->etat == 1 ? 'selected' : '' }}>Client</option>
+                        <option value="2" {{ $client->etat == 2 ? 'selected' : '' }}>Ancien client</option>
                       </select>
                     </div>
                   </div>
@@ -60,7 +69,7 @@
                       <label for="ville">Ville</label>
                       <input type="search" id="address" name="ville" class="form-control"  value="{{ $client->ville }}">
                     </div>
-                    @error('address')
+                    @error('ville')
                     <p class="alert alert-danger" style="margin-top:1em;">{{ $message }}</p>
                     @enderror
                   </div>
@@ -109,7 +118,7 @@
                     <p class="alert alert-danger" style="margin-top:1em;">{{ $message }}</p>
                     @enderror
                   </div>
-                  <img src="{{ url('/img/'.$client->picture) }}" alt="{{ $client->enseigne }}_logo">
+                  <img class="text-center" src="{{ url('/img/clients/'.$client->picture) }}" alt="{{ $client->enseigne }}_logo">
               </div>
               <!-- /.card-body -->
             <!-- /.card-body -->
@@ -118,86 +127,115 @@
         </div>
         <div class="col-md-6">
           <div class="card card-secondary">
-            <div class="card-header">
-              <h3 class="card-title">Notes</h3>
+              <div class="card-header">
+                <h3 class="card-title">Notes</h3>
+              </div>
+              <div class="card-body">
+                <div class="form-group">
+                  <label for="note">Notes</label>
+                  <textarea id="note" class="form-control" rows="20" name="note">{{ $client->note }}</textarea>
+                </div>
+
+              <!-- /.card-body -->
             </div>
-            <div class="card-body">
-              <div class="form-group">
-                <label for="inputEstimatedBudget">Estimated budget</label>
-                <input type="number" id="inputEstimatedBudget" class="form-control" value="2300" step="1">
-              </div>
-              <div class="form-group">
-                <label for="inputSpentBudget">Total amount spent</label>
-                <input type="number" id="inputSpentBudget" class="form-control" value="2000" step="1">
-              </div>
-              <div class="form-group">
-                <label for="inputEstimatedDuration">Estimated project duration</label>
-                <input type="number" id="inputEstimatedDuration" class="form-control" value="20" step="0.1">
-              </div>
-            </div>
-            <!-- /.card-body -->
+            <!-- /.card -->
           </div>
+          <input id="id" name="id" type="hidden" value="{{ $client->id }}">
+      <div class="row">
+        <div class="col-12">
+          <a href="{{ route('clients.index') }}" class="btn btn-secondary">Retour</a>
+          <input type="submit" value="Sauvegarder" class="btn btn-success float-right">
+        </div>
+      </div></br>
+    </form>
           <!-- /.card -->
           <div class="card card-info">
             <div class="card-header">
               <h3 class="card-title">Contacts</h3>
+              <div class="card-tools">
+              <div class="btn-group btn-group-sm text-right">
+                <a href="#" class="btn btn-success btn-addcontact" data-toggle="modal" data-target="#modal-create"><i class="fas fa-plus"></i></a>
+              </div>
+              </div>
             </div>
+
             <div class="card-body p-0">
               <table class="table">
                 <thead>
                   <tr>
-                    <th>File Name</th>
-                    <th>File Size</th>
+                    <th>Nom</th>
+                    <th>Poste</th>
+                    <th>Téléphone</th>
+                    <th>Email</th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody>
+                @foreach($contacts as $contact)
+                  <tr>
+                    <td>{{ $contact->fullname }}</td>
+                    <td>{{ $contact->poste }}</td>
+                    <td>{{ $contact->telephone }}</td>
+                    <td>{{ $contact->email }}</td>
+                    <td class="text-right py-0 align-middle">
+                      <div class="btn-group btn-group-sm">
+                        <a href="#" class="btn btn-info" data-toggle="modal" data-target="#modal-update{{ $contact->id }}"><i class="fas fa-pen"></i></a>
+                      </div>
+                    </td>
 
-                  <tr>
-                    <td>Functional-requirements.docx</td>
-                    <td>49.8005 kb</td>
-                    <td class="text-right py-0 align-middle">
-                      <div class="btn-group btn-group-sm">
-                        <a href="#" class="btn btn-info"><i class="fas fa-eye"></i></a>
-                        <a href="#" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+
+                    <!-- /.Modifier un contact -->
+                    <div class="modal fade" id="modal-update{{ $contact->id }}">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                              <h4 class="modal-title">Modifier un contact</h4>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+
+                              <form method="post" action="{{ route('contacts.update', $contact->id) }}">
+                               @csrf
+                               @method('put')
+                                <div class="form-group">
+                                  <label for="fullname">Nom*</label>
+                                  <input type="text" name="fullname" class="form-control" value="{{ $contact->fullname }}">
+                                </div>
+                                <div class="form-group">
+                                  <label for="poste">Poste</label>
+                                  <input type="text" name="poste" class="form-control" value="{{ $contact->poste }}">
+                                </div>
+                                <div class="form-group">
+                                  <label for="telephone">Téléphone</label>
+                                  <input type="text" name="telephone" class="form-control" value="{{ $contact->telephone }}">
+                                </div>
+                                <div class="form-group">
+                                  <label for="email">Email</label>
+                                  <input type="text" name="email" class="form-control" value="{{ $contact->email }}">
+                                </div>
+                                <input id="clients_id" name="clients_id" type="hidden" value="{{ $client->id }}">
+                                <div class="modal-footer justify-content-between">
+                                  <input type="submit" value="Modifier le contact" class="btn btn-primary">
+                              </form>
+                              <form action="{{ route('contacts.destroy', $contact->id) }}" method="post" style="float:left;">
+                                @csrf
+                                @method('DELETE')
+                                <input type="submit" value="Supprimer" class="btn btn-danger">
+                              </form>
+                              </div>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
                       </div>
-                    </td>
-                  <tr>
-                    <td>UAT.pdf</td>
-                    <td>28.4883 kb</td>
-                    <td class="text-right py-0 align-middle">
-                      <div class="btn-group btn-group-sm">
-                        <a href="#" class="btn btn-info"><i class="fas fa-eye"></i></a>
-                        <a href="#" class="btn btn-danger"><i class="fas fa-trash"></i></a>
-                      </div>
-                    </td>
-                  <tr>
-                    <td>Email-from-flatbal.mln</td>
-                    <td>57.9003 kb</td>
-                    <td class="text-right py-0 align-middle">
-                      <div class="btn-group btn-group-sm">
-                        <a href="#" class="btn btn-info"><i class="fas fa-eye"></i></a>
-                        <a href="#" class="btn btn-danger"><i class="fas fa-trash"></i></a>
-                      </div>
-                    </td>
-                  <tr>
-                    <td>Logo.png</td>
-                    <td>50.5190 kb</td>
-                    <td class="text-right py-0 align-middle">
-                      <div class="btn-group btn-group-sm">
-                        <a href="#" class="btn btn-info"><i class="fas fa-eye"></i></a>
-                        <a href="#" class="btn btn-danger"><i class="fas fa-trash"></i></a>
-                      </div>
-                    </td>
-                  <tr>
-                    <td>Contract-10_12_2014.docx</td>
-                    <td>44.9715 kb</td>
-                    <td class="text-right py-0 align-middle">
-                      <div class="btn-group btn-group-sm">
-                        <a href="#" class="btn btn-info"><i class="fas fa-eye"></i></a>
-                        <a href="#" class="btn btn-danger"><i class="fas fa-trash"></i></a>
-                      </div>
-                    </td>
+                      <!-- /.modal-dialog -->
+                    </div>
+                    <!-- /.modal -->
+
+
+                @endforeach
 
                 </tbody>
               </table>
@@ -207,19 +245,55 @@
           <!-- /.card -->
         </div>
       </div>
-      <div class="row">
-        <div class="col-12">
-          <a href="#" class="btn btn-secondary">Cancel</a>
-          <input type="submit" value="Save Changes" class="btn btn-success float-right">
-        </div>
-      </div>
     </section>
     <!-- /.content -->
-
-
-
   </div>
   <!-- /.content-wrapper -->
+
+
+  <!-- /.Ajouter un contact -->
+  <div class="modal fade" id="modal-create">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+          <div class="modal-header">
+            <h4 class="modal-title">Ajouter un contact</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form method="post" action="{{ route('contacts.store') }}">
+             @csrf
+              <div class="form-group">
+                <label for="fullname">Nom*</label>
+                <input type="text" name="fullname" class="form-control" placeholder="François Delahaye">
+              </div>
+              <div class="form-group">
+                <label for="poste">Poste</label>
+                <input type="text" name="poste" class="form-control" placeholder="Directeur">
+              </div>
+              <div class="form-group">
+                <label for="telephone">Téléphone</label>
+                <input type="text" name="telephone" class="form-control" placeholder="0608090705">
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" name="email" class="form-control" placeholder="françois.delahaye@gmail.com">
+              </div>
+              <input id="clients_id" name="clients_id" type="hidden" value="{{ $client->id }}">
+          <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+            <input type="submit" value="Créer le contact" class="btn btn-primary">
+          </div>
+            </form>
+          </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
 @endsection
 
 @section('js')
