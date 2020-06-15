@@ -32,7 +32,6 @@ class ClientController extends Controller
 
         return view('admin.clients.list', ['clients' => $client]);
     }
-
     public function create()
     {
         return view('admin.clients.create');
@@ -61,7 +60,7 @@ class ClientController extends Controller
         else {
             $new_client = Client::create($request->all());
         }
-        return redirect()->route('clients.edit', [$new_client->id])->with('info', 'Le client a bien été créée');
+        return redirect()->route('clients.show', [$new_client->id])->with('info', 'Le client a bien été créée');
 
     }
 
@@ -79,17 +78,17 @@ class ClientController extends Controller
 
     public function edit(Client $client)
     {
-        //
+        $client = Client::find($client->id);
+        return view('admin.clients.edit', compact('client'));
     }
 
     public function update(Request $request, Client $client)
     {
         //
     }
-
     public function destroy(Client $client)
     {
         $client->delete();
-        return back()->with('info', 'Le client a bien été supprimé dans la base de données.');
+        return back()->with('info', 'Le client a bien été supprimé.');
     }
 }

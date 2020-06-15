@@ -26,8 +26,8 @@ class CreateMissionsTable extends Migration
             $table->foreign('clients_id')
                 ->references('id')
                 ->on('clients')
-                ->onDelete('restrict')
-                ->onUpdate('restrict');
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->timestamps();
         });
     }

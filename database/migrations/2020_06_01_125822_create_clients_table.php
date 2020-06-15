@@ -23,6 +23,7 @@ class CreateClientsTable extends Migration
             $table->integer('cp');// ville
             $table->boolean('etat')->default(0); // 0 = prospect, 1 = client
             $table->text('picture')->nullable(); // logo
+            $table->softDeletes();
             $table->timestamps(); // created_at/update_at
         });
     }

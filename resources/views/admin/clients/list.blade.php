@@ -106,11 +106,13 @@
                               </i>
                               Modifier
                           </a>
-                          <a class="btn btn-danger btn-sm" href="{{ route('clients.destroy', $client->id) }}">
-                              <i class="fas fa-trash">
-                              </i>
-                              Supprimer
-                          </a>
+                          <form action="{{ route('clients.destroy', $client->id) }}" method="post">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-danger btn-sm btn-delete" type="submit"><i class="fas fa-trash">
+                              </i>Supprimer</button>
+                          </form>
+
                       </td>
                   </tr>
                 @endforeach

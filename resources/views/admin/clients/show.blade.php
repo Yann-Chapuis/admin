@@ -19,7 +19,11 @@
 
     <!-- Main content -->
     <section class="content">
-
+    @if(session('info'))
+        <div class="alert alert-success" role="alert">
+            {{ session('info') }}
+        </div>
+    @endif
       <!-- Default box -->
       <div class="card">
         <div class="card-header">
@@ -114,13 +118,69 @@
                 </p>
                 <p class="text-sm">Contacts :
                   @foreach($contacts as $contact)
-                    <b class="d-block">{{ $contact->fullname }} ({{ $contact->poste }}) :</b> {{ $contact->email }} - {{ $contact->telephone }}
+                    <b class="d-block"><a href="" data-toggle="modal" data-target="#modal-update{{ $contact->id }}">{{ $contact->fullname }} ({{ $contact->poste }}) :</a></b> {{ $contact->email }} - {{ $contact->telephone }}
+
+                    <!-- /.Modifier un contact -->
+                    <div class="modal fade" id="modal-update{{ $contact->id }}">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                              <h4 class="modal-title">Modifier un contact</h4>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+
+                              <form method="post" action="{{ route('contacts.update', $contact->id) }}">
+                               @csrf
+                               @method('put')
+                                <div class="form-group">
+                                  <label for="fullname">Nom*</label>
+                                  <input type="text" name="fullname" class="form-control" value="{{ $contact->fullname }}">
+                                </div>
+                                <div class="form-group">
+                                  <label for="poste">Poste</label>
+                                  <input type="text" name="poste" class="form-control" value="{{ $contact->poste }}">
+                                </div>
+                                <div class="form-group">
+                                  <label for="telephone">Téléphone</label>
+                                  <input type="text" name="telephone" class="form-control" value="{{ $contact->telephone }}">
+                                </div>
+                                <div class="form-group">
+                                  <label for="email">Email</label>
+                                  <input type="text" name="email" class="form-control" value="{{ $contact->email }}">
+                                </div>
+                                <input id="clients_id" name="clients_id" type="hidden" value="{{ $client->id }}">
+                                <div class="modal-footer justify-content-between">
+                                  <input type="submit" value="Modifier le contact" class="btn btn-primary">
+                              </form>
+                              <form action="{{ route('contacts.destroy', $contact->id) }}" method="post" style="float:left;">
+                                @csrf
+                                @method('DELETE')
+                                <input type="submit" value="Supprimer" class="btn btn-danger">
+                              </form>
+                              </div>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                      </div>
+                      <!-- /.modal-dialog -->
+                    </div>
+                    <!-- /.modal -->
+
                   @endforeach
                 </p>
+                  <a class="btn btn-info btn-sm" href="" data-toggle="modal" data-target="#modal-default">
+                    <i class="fas fa-pencil-alt">
+                    </i>
+                    Ajouter un contact
+                  </a>
               </div>
               <hr>
               <p class="text-muted">Notes :</p>
-              <p class="text-muted">Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua butcher retro keffiyeh dreamcatcher synth. Cosby sweater eu banh mi, qui irure terr.</p>
+              <p class="text-muted">{{ $client->note }}</p>
             </div>
           </div>
         </div>
@@ -133,6 +193,52 @@
 
   </div>
   <!-- /.content-wrapper -->
+
+  <!-- /.Ajouter un contact -->
+  <div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+          <div class="modal-header">
+            <h4 class="modal-title">Ajouter un contact</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <form method="post" action="{{ route('contacts.store') }}">
+             @csrf
+              <div class="form-group">
+                <label for="fullname">Nom*</label>
+                <input type="text" name="fullname" class="form-control" placeholder="François Delahaye">
+              </div>
+              <div class="form-group">
+                <label for="poste">Poste</label>
+                <input type="text" name="poste" class="form-control" placeholder="Directeur">
+              </div>
+              <div class="form-group">
+                <label for="telephone">Téléphone</label>
+                <input type="text" name="telephone" class="form-control" placeholder="0608090705">
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" name="email" class="form-control" placeholder="françois.delahaye@gmail.com">
+              </div>
+              <input id="clients_id" name="clients_id" type="hidden" value="{{ $client->id }}">
+          <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+            <input type="submit" value="Créer le contact" class="btn btn-primary">
+          </div>
+            </form>
+          </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
 @endsection
 
 @section('js')

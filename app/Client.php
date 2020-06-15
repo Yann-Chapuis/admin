@@ -5,9 +5,12 @@ use App\Contact;
 use App\Mission;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Client extends Model
 {
+
+    use SoftDeletes;
 
     protected $fillable = [
         'enseigne','note', 'telephone', 'email', 'ville', 'cp', 'etat', 'picture'
@@ -23,14 +26,12 @@ class Client extends Model
         return $this->hasMany('App\Contact', 'clients_id');
     }
 
-	 /**
-     * Trie par date d'update, plus récent au plus ancien.
-     *
-     * @param $query
-     * @return mixed
-     */
     public function scopeOrderByUpdate($query) {
     	return $query->orderBy('enseigne', 'desc');
+    }
+
+    public function scopeById($query, $id) {
+        return $query->where('id', $id);
     }
 
 
