@@ -15,7 +15,7 @@
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Admin</li>
               <li class="breadcrumb-item active">Calendar</li>
             </ol>
           </div>
@@ -31,20 +31,20 @@
             <div class="sticky-top mb-3">
               <div class="card">
                 <div class="card-header">
-                  <h4 class="card-title">Draggable Events</h4>
+                  <h4 class="card-title">Tâches</h4>
                 </div>
                 <div class="card-body">
                   <!-- the events -->
                   <div id="external-events">
-                    <div class="external-event bg-success">Lunch</div>
-                    <div class="external-event bg-warning">Go home</div>
-                    <div class="external-event bg-info">Do homework</div>
-                    <div class="external-event bg-primary">Work on UI design</div>
-                    <div class="external-event bg-danger">Sleep tight</div>
+                    <div class="external-event bg-warning">Rendez-vous</div>
+                    <div class="external-event bg-success">Repas</div>
+                    <div class="external-event bg-info">Rappeler</div>
+                    <div class="external-event bg-danger">Facturer</div>
+                    <div class="external-event bg-primary">Mission</div>
                     <div class="checkbox">
                       <label for="drop-remove">
                         <input type="checkbox" id="drop-remove">
-                        remove after drop
+                        Retirer après l'avoir placer
                       </label>
                     </div>
                   </div>
@@ -54,7 +54,7 @@
               <!-- /.card -->
               <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Create Event</h3>
+                  <h3 class="card-title">Créer une tâche</h3>
                 </div>
                 <div class="card-body">
                   <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
@@ -69,10 +69,10 @@
                   </div>
                   <!-- /btn-group -->
                   <div class="input-group">
-                    <input id="new-event" type="text" class="form-control" placeholder="Event Title">
+                    <input id="new-event" type="text" class="form-control" placeholder="ex : Rendez-vous">
 
                     <div class="input-group-append">
-                      <button id="add-new-event" type="button" class="btn btn-primary">Add</button>
+                      <button id="add-new-event" type="button" class="btn btn-primary">Ajouter</button>
                     </div>
                     <!-- /btn-group -->
                   </div>
@@ -103,35 +103,30 @@
   @endsection
 
 @section('js')
-<script src="{{ mix('js/calendar.js') }}"></script> 
+<!-- <script src="{{ mix('js/calendar.js') }}"></script> --> 
+
+<!-- jQuery -->
+
+<!-- fullCalendar 2.2.5 
+<script src="https://adminlte.io/themes/v3/plugins/moment/moment.min.js"></script>
+<script src="https://adminlte.io/themes/v3/plugins/fullcalendar/main.min.js"></script>
+<script src="https://adminlte.io/themes/v3/plugins/fullcalendar-daygrid/main.min.js"></script>
+<script src="https://adminlte.io/themes/v3/plugins/fullcalendar-timegrid/main.min.js"></script>
+<script src="https://adminlte.io/themes/v3/plugins/fullcalendar-interaction/main.min.js"></script>
+<script src="https://adminlte.io/themes/v3/plugins/fullcalendar-bootstrap/main.min.js"></script>
+
+<script src="https://adminlte.io/themes/v3/plugins/fullcalendar/locales/fr.js"></script>-->
+
+
+<script src="{{ mix('js/calendar.js') }}"></script>
 <script>
-  $(function () {
 
-    /* initialize the external events
-     -----------------------------------------------------------------*/
-    function ini_events(ele) {
-      ele.each(function () {
 
-        // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
-        // it doesn't need to have a start or end
-        var eventObject = {
-          title: $.trim($(this).text()) // use the element's text as the event title
-        }
-
-        // store the Event Object in the DOM element so we can get to it later
-        $(this).data('eventObject', eventObject)
-
-        // make the event draggable using jQuery UI
-        $(this).draggable({
-          zIndex        : 1070,
-          revert        : true, // will cause the event to go back to its
-          revertDuration: 0  //  original position after the drag
-        })
-
-      })
-    }
-
-    ini_events($('#external-events div.external-event'))
+    var Calendar = FullCalendar.Calendar;
+    var Draggable = FullCalendarInteraction.Draggable;
+/* Calendar */
+document.addEventListener('DOMContentLoaded', function() {
+  var calendarEl = document.getElementById('calendar');
 
     /* initialize the calendar
      -----------------------------------------------------------------*/
@@ -141,12 +136,10 @@
         m    = date.getMonth(),
         y    = date.getFullYear()
 
-    var Calendar = FullCalendar.Calendar;
-    var Draggable = FullCalendarInteraction.Draggable;
+  var containerEl = document.getElementById('external-events');
+  var checkbox = document.getElementById('drop-remove');
+  var calendarEl = document.getElementById('calendar');
 
-    var containerEl = document.getElementById('external-events');
-    var checkbox = document.getElementById('drop-remove');
-    var calendarEl = document.getElementById('calendar');
 
     // initialize the external events
     // -----------------------------------------------------------------
@@ -164,30 +157,51 @@
       }
     });
 
-    var calendar = new Calendar(calendarEl, {
-      plugins: [ 'bootstrap', 'interaction', 'dayGrid', 'timeGrid' ],
-      header    : {
-        left  : 'prev,next today',
-        center: 'title',
-        right : 'dayGridMonth,timeGridWeek,timeGridDay'
-      },
+  var calendar = new Calendar(calendarEl, {
+    plugins: [ dayGrid, timeGrid, interaction, bootstrap ],
+    locale: frLocale,
+  header    : {
+    left  : 'prev,next today',
+    center: 'title',
+    right : 'dayGridMonth,timeGridWeek,timeGridDay'
+  },
       'themeSystem': 'bootstrap',
       //Random default events
       events    : [
+        {
+          title          : 'All Day Event',
+          start          : new Date(y, m, 1),
+          backgroundColor: '#f56954', //red
+          borderColor    : '#f56954', //red
+          allDay         : true
+        }
       ],
       editable  : true,
       droppable : true, // this allows things to be dropped onto the calendar !!!
+      selectable: true,
+    select: function(info) {
+      var dateS = prompt('Saisissez le nom de la tâche :' );
+          if (dateS) { // valid?
+            calendar.addEvent({
+              title: dateS,
+              start: info.startStr,
+              end: info.endStr,
+            });
+          } else {
+            alert('Veuillez entrer un nom de tâche');
+          }
+
+    },
       drop      : function(info) {
         // is the "remove after drop" checkbox checked?
         if (checkbox.checked) {
           // if so, remove the element from the "Draggable Events" list
           info.draggedEl.parentNode.removeChild(info.draggedEl);
         }
-      }    
-    });
+      }  
+  });
 
-    calendar.render();
-    // $('#calendar').fullCalendar()
+  calendar.render();
 
     /* ADDING EVENTS */
     var currColor = '#3c8dbc' //Red by default
@@ -227,6 +241,7 @@
       //Remove event from text input
       $('#new-event').val('')
     })
-  })
+
+});
 </script>
 @endsection

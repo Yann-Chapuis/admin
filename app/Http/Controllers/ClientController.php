@@ -73,7 +73,7 @@ class ClientController extends Controller
         $count_factures = $this->missions->getCountFactures($client->id);
         $last_mission = $this->missions->getLastMission($client->id, $client);
         //dd($last_mission);       
-        return view('admin.clients.show', compact('client', 'contacts', 'missions', 'total', 'count_days', 'count_factures', 'last_mission'));
+        return view('admin.clients.show', compact('client', 'contacts', 'missions', 'count_days', 'count_factures', 'last_mission')); 
     }
 
     public function edit(Client $client)
